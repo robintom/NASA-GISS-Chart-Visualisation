@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <canvas id="myChart" width="400" height="150vh"></canvas>
+    <script>
+      window.addEventListener("DOMContentLoaded", loadChart);
+      async function loadChart() {
+        console.log("I am inside loadChart Function");
+        const canvasSelector = document.getElementById("myChart");
+        const globalTempData = await getData();
+        const myChart = new Chart(canvasSelector, {
+          type: "line",
+          data: {
+            labels: globalTempData.year,
+            datasets: [
+              {
+                label: "Temperature in Celcius",
+                data: globalTempData.temp,
+                fill: false,
+                backgroundColor: "rgba(255, 99, 132, 1)",
+                borderColor: "rgba(0,0,255 ,1 )",
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: "Global Mean Temperatures Over the Years (1880 - 2018)",
+              fontSize: 22
+            }
+          }
+        });
+      }
+
+      async function getData() {
+        const data = await fetch("./nasa_data.csv");
+        const fetchedData = await data.text();
+        //splitting the fetched data into rows
+        const dataArray = fetchedData.split("\n").slice(1);
+        const temp = [];
+        const year = [];
+
+        dataArray.forEach(row => {
+          //Splitting the data further into individual values
+          const dataForYear = row.split(",");
+          year.push(parseInt(dataForYear[0]));
+          temp.push(14 + parseFloat(dataForYear[1]));
+        });
+
+        return { year, temp };
+      }
+    </script>
+  </body>
+</html>
