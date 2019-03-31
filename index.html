@@ -5,10 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Demo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"
+    /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-    <canvas id="myChart" width="400" height="200"></canvas>
+    <div class="chart-container">
+      <canvas id="myChart"></canvas>
+    </div>
+
     <script>
       window.addEventListener("DOMContentLoaded", loadChart);
       async function loadChart() {
@@ -24,28 +33,58 @@
                 label: "Temperature in Celcius",
                 data: globalTempData.temp,
                 fill: false,
+                // backgroundColor: "rgba(255, 99, 132, 1)",
                 backgroundColor: "rgba(255, 99, 132, 1)",
-                borderColor: "rgba(0,0,255 ,1 )",
+                borderColor: "#080808",
                 borderWidth: 1
               }
             ]
           },
           options: {
             responsive: true,
+            legend: {
+              labels: {
+                fontColor: "#080808",
+                fontSize: 18
+              }
+            },
             title: {
               display: true,
               text: "Global Mean Temperatures Over the Years (1880 - 2018)",
-              fontSize: 22
+              fontSize: 22,
+              fontColor: "#080808"
+            },
+            scales: {
+              xAxes: [
+                {
+                  gridLines: {
+                    display: true
+                  },
+                  ticks: {
+                    fontColor: "#080808"
+                  }
+                }
+              ],
+              yAxes: [
+                {
+                  gridLines: {
+                    display: true
+                  },
+                  ticks: {
+                    fontColor: "#080808"
+                  }
+                }
+              ]
             }
           }
         });
       }
 
       async function getData() {
-        const data = await fetch("./nasa_data.csv");
-        const fetchedData = await data.text();
+        const data = await fetch("./nasa_data.csv").then(res => res.text());
+
         //splitting the fetched data into rows
-        const dataArray = fetchedData.split("\n").slice(1);
+        const dataArray = data.split("\n").slice(1);
         const temp = [];
         const year = [];
 
